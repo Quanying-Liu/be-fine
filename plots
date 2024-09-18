@@ -21,3 +21,50 @@ ggplot(data,aes(y=reorder(Biomarker,Z),x=Z,fill=type))+#scale_fill_manual
 dev.off()
 ggsave("bar1.pdf")
 
+
+###
+getwd()
+setwd("E:/Rwork")
+library(readr)
+df <- read_csv("RELASA.csv")
+df<-na.omit(df)
+library(ggplot2)
+tiff(filename = "ELASAAA.eps",width = 2600,height = 1800,res = 300)
+ggplot(df, aes(x = Biomarker, y = Z)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE) + 
+  xlab("Biomarker") +
+  ylab("Z")
+ggplot(df, aes(x = reorder(Biomarker, Z), y = Z)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  xlab("Biomarker") +
+  ylab("Z")
+ 
+
+ggplot(df, aes(x = reorder(Biomarker, Z), y = Z)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE) +
+  xlab("Biomarker") +
+  ylab("Z") +
+  coord_flip()  
+
+
+color <- ifelse(df$Z < 0, "#1874CD","#CD0000")
+tiff(filename = "ELASAAA.eps",width = 3000,height = 2400,res = 300)
+ggplot(df, aes(x = reorder(Biomarker, Z), y = Z)) +
+  geom_bar(stat = "identity",
+           show.legend = FALSE,
+                fill = color,     
+               color = "white") + 
+  geom_text(aes(label = round(Z, 1),
+                hjust = ifelse(Z < 0, 1.5, -1),
+                vjust = 0.5),
+            size = 3) +
+  xlab("Biomarker") +
+  ylab("Z") +
+  coord_flip() + 
+  scale_y_continuous(breaks= seq(-2, 2, by = 1),
+                     limits = c(min(df$Z) - 0.5,
+                                max(df$Z) + 0.5))  
+
