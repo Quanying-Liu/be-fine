@@ -1,0 +1,23 @@
+data<-read.csv("RELASA.csv")
+data$SD=data$SD/50
+data$type = ifelse(data$Z>0,"up","down")
+colnames(data)[3]="pvalue"
+ggplot(data,aes(y=reorder(Biomarker,Z),x=Z,fill=type))+#scale_fill_manual 
+  scale_fill_manual(values=c("#1874CD","#CD0000"),guide=F)+
+  #geom_errorbar
+  geom_errorbar(aes(xmin=Z-SD, xmax=Z+SD),
+                width=.2, position=position_dodge(.9))+
+  geom_bar(stat="identity",width=0.7,position=position_dodge(width =1))+
+  theme_classic()+ 
+  theme(axis.line = element_line(size=0.6, colour = "black"),
+        axis.text= element_text(face = "bold",colour = "black"))+
+  xlab( 'Z' ) + ylab("") +
+  geom_vline(xintercept=c(0,0),linetype="dashed")+
+  geom_text(aes(x=ifelse(Z>0,Z+SD+0.1,Z-abs(SD)-0.2), 
+                label=ifelse(pvalue<0.05 & pvalue>0.01,"*", 
+                             ifelse(pvalue<=0.01&pvalue>0.001,"**",
+                                    ifelse(pvalue<=0.001,"***","")))))
+
+dev.off()
+ggsave("bar1.pdf")
+
